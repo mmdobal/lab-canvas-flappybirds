@@ -21,7 +21,7 @@ function FabyCreator() {
 //   gravity: 0,
 //   gravitySpeed: 1
 // };
-const faby = new FabyCreator();
+var faby = new FabyCreator();
 
 function drawFaby() {
   drawBackground();
@@ -37,8 +37,11 @@ function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function fall() {
-  faby.height += faby.gravity * faby.speedGravity;
+function fall(grav, gravSpeed) {
+  faby.gravity += grav;
+  faby.gravitySpeed = gravSpeed;
+
+  faby.height += grav * gravSpeed;
 }
 
 
@@ -47,22 +50,22 @@ function fall() {
 function startGame() {
   drawFaby();
   const intervalId = setInterval(() => {
-    console.log(faby.height + 'hhh');
-    faby.gravity = 1;
-    faby.speedGravity += 2;
-    fall();
+    // faby = new FabyCreator();
+    // faby.gravity += 1;
+    // faby.gravitySpeed = 2;
+    fall(1, 5);
     drawFaby();
-    console.log(faby.gravitySpeed, faby.height);
+    console.log(faby.height);
   }, 1000);
 
   document.body.onkeyup = function (e) {
     if (e.keyCode === 32) {
       clearInterval(intervalId);
 
-      faby.gravity = -1;
-      faby.speedGravity = 5;
+      // faby.gravity = -1;
+      // faby.speedGravity = 5;
       console.log(faby.gravity, faby.gravitySpeed);
-      fall();
+      fall(-1, 5);
       drawFaby();
     }
   };
