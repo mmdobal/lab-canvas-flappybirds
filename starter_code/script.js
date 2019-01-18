@@ -1,3 +1,42 @@
+/* function Background(ctx) {
+  this.ctx = ctx;
+  this.bgImg = new Image();
+  this.bgImg.src = './images/bg.png';
+}
+
+Background.prototype.draw = function () {
+  this.ctx.drawImage(this.bgImg, 0, 0);
+};
+
+function Pipe(canvas) {
+  this.ctx = canvas.ctx;
+  this.img = new Image();
+  this.img.src = './images/obstacle_top.png';
+  this.topY = Math.random() * (-550 - (-700)) + (-700);
+  this.topX = 900;
+  this.bottomY = this.topY + 943;
+}
+
+Pipe.prototype.drawPipe = function () {
+  this.ctx.drawImage(img, pipe.topX, pipe.topY, 138, 793);
+}
+
+function Canvas() {
+  this.canvas = document.getElementById('my-canvas');
+  this.ctx = this.canvas.getContext('2d');
+
+  this.background = new Background(this.ctx);
+
+  this.arrayObstacle = [];
+}
+
+Canvas.prototype.addPipe = function () {
+  const pipe = new Pipe(this);
+  this.arrayObstacle.push(pipe);
+} */
+
+// const canvas = new Canvas();
+// canvas.addPipe();
 const canvas = document.getElementById('my-canvas');
 const ctx = canvas.getContext('2d');
 const background = new Image();
@@ -48,7 +87,7 @@ function drawPi(pipe) {
   img2.src = './images/obstacle_bottom.png';
 }
 
-let faby = new FabyCreator();
+const faby = new FabyCreator();
 
 function drawFaby() {
   drawBackground();
@@ -68,8 +107,28 @@ function fall(grav, gravSpeed) {
   faby.height += grav * gravSpeed;
 }
 
+
+
 function startGame() {
   drawFaby();
+
+  document.body.onkeyup = function (e) {
+    if (e.keyCode === 32) {
+      // clearInterval(intervalId);
+  
+      console.log(faby.gravity, faby.gravitySpeed);
+      // fall(-1, 5);
+      // drawFaby();
+    }
+  };
+  
+  const intervalId = setInterval(() => {
+    //fall(1, 5);
+    drawFaby();
+    console.log(faby.height);
+  }, 1000);
+  
+  
 
   const createObstacle = setInterval(() => {
     const pipe = new Pipes();
@@ -78,9 +137,10 @@ function startGame() {
 
   const render = setInterval(() => {
     for (let i = 0; i < arrayObstacle.length; i += 1) {
-      if (arrayObstacle[i].topX === 0) {
-        arrayObstacle.splice(arrayObstacle[i], 1);
+      if (arrayObstacle[i].topX === -138) {
+        arrayObstacle.slice(arrayObstacle[i], 1);
         console.log(arrayObstacle.length);
+
       } else {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawFaby();
@@ -89,6 +149,7 @@ function startGame() {
       }     
     }
   }, 10);
+
 }
 
 window.onload = function () {
@@ -96,19 +157,3 @@ window.onload = function () {
     startGame();
   };
 };
-
-document.body.onkeyup = function (e) {
-  if (e.keyCode === 32) {
-    // clearInterval(intervalId);
-
-    console.log(faby.gravity, faby.gravitySpeed);
-    fall(-1, 5);
-    // drawFaby();
-  }
-};
-
-const intervalId = setInterval(() => {
-  fall(1, 5);
-  drawFaby();
-  console.log(faby.height);
-}, 1000);
