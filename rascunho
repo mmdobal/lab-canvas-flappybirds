@@ -1,0 +1,21 @@
+  drawFaby();
+  const intervalId = setInterval(() => {
+    console.log(faby.height + 'hhh');
+    faby.gravity = 1;
+    faby.speedGravity += 2;
+    fall();
+    drawFaby();
+    console.log(faby.gravitySpeed, faby.height);
+  }, 1000);
+
+  document.body.onkeyup = function (e) {
+    if (e.keyCode === 32) {
+      clearInterval(intervalId);
+
+      faby.gravity = -1;
+      faby.speedGravity = 5;
+      console.log(faby.gravity, faby.gravitySpeed);
+      fall();
+      drawFaby();
+    }
+  };
