@@ -6,6 +6,8 @@ function drawBackground() {
   ctx.drawImage(background, 0, 0);
 }
 
+const arrayObstacle = [];
+
 function FabyCreator() {
   this.width = 450;
   this.height = 250;
@@ -14,14 +16,39 @@ function FabyCreator() {
   this.gravitySpeed = 1;
 }
 
-// let faby = {
-//   width: 450,
-//   height: 250,
-//   speedY: 0,
-//   gravity: 0,
-//   gravitySpeed: 1
-// };
-var faby = new FabyCreator();
+function random(max, min) {
+  return Math.random() * (max - min) + min;
+}
+
+function pipeY() {
+  return random(-550, -700);
+}
+
+function Pipes() {
+  this.topY = pipeY();
+  this.topX = 900;
+  this.bottomY = this.topY + 943;
+}
+
+
+function drawPi(pipe) {
+  drawBackground();
+  const img = new Image();
+  // const y = pipeY();
+  // const imgScale = 498 / 351;
+  img.onload = function () {
+    ctx.drawImage(img, pipe.topX, pipe.topY, 138, 793);
+  };
+  img.src = './images/obstacle_top.png';
+  const img2 = new Image();
+  // const img2Scale = 498 / 351;
+  img2.onload = function () {
+    ctx.drawImage(img2, pipe.topX, pipe.bottomY, 138, 793);
+  };
+  img2.src = './images/obstacle_bottom.png';
+}
+
+let faby = new FabyCreator();
 
 function drawFaby() {
   drawBackground();
@@ -33,9 +60,6 @@ function drawFaby() {
   img.src = './images/flappy.png';
 }
 
-function update() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
 
 function fall(grav, gravSpeed) {
   faby.gravity += grav;
@@ -44,31 +68,27 @@ function fall(grav, gravSpeed) {
   faby.height += grav * gravSpeed;
 }
 
-
-// setInterval(update, 20)
-
 function startGame() {
   drawFaby();
-  const intervalId = setInterval(() => {
-    // faby = new FabyCreator();
-    // faby.gravity += 1;
-    // faby.gravitySpeed = 2;
-    fall(1, 5);
-    drawFaby();
-    console.log(faby.height);
-  }, 1000);
 
-  document.body.onkeyup = function (e) {
-    if (e.keyCode === 32) {
-      clearInterval(intervalId);
+  const createObstacle = setInterval(() => {
+    const pipe = new Pipes();
+    arrayObstacle.push(pipe);
+  }, 5000);
 
-      // faby.gravity = -1;
-      // faby.speedGravity = 5;
-      console.log(faby.gravity, faby.gravitySpeed);
-      fall(-1, 5);
-      drawFaby();
+  const render = setInterval(() => {
+    for (let i = 0; i < arrayObstacle.length; i += 1) {
+      if (arrayObstacle[i].topX === 0) {
+        arrayObstacle.splice(arrayObstacle[i], 1);
+        console.log(arrayObstacle.length);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawFaby();
+        arrayObstacle[i].topX -= 1;
+        drawPi(arrayObstacle[i]);
+      }     
     }
-  };
+  }, 10);
 }
 
 window.onload = function () {
@@ -76,3 +96,19 @@ window.onload = function () {
     startGame();
   };
 };
+
+document.body.onkeyup = function (e) {
+  if (e.keyCode === 32) {
+    // clearInterval(intervalId);
+
+    console.log(faby.gravity, faby.gravitySpeed);
+    fall(-1, 5);
+    // drawFaby();
+  }
+};
+
+const intervalId = setInterval(() => {
+  fall(1, 5);
+  drawFaby();
+  console.log(faby.height);
+}, 1000);
